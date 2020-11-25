@@ -31,6 +31,28 @@
             font_size: 40
             font_name: 'Caveat-VariableFont_wght'
             on_press: root.exit_game()
+<GameScreen>:
+    on_enter: root.create_cells()
+    cells: Cells
+
+    BoxLayout:
+        orientation: 'vertical'
+
+        BoxLayout:
+            id: Cells
+            orientation: 'vertical'
+        BoxLayout:
+            Button:
+                text: 'Vissza'
+                on_press: root.back()
+<ScoreboardScreen>:
+    BoxLayout:
+        orientation: 'vertical'
+        padding: 100
+
+    Button:
+        text: 'Vissza'
+        on_press: root.back()
 <RulesScreen>:
     BoxLayout:
         orientation: 'vertical'
