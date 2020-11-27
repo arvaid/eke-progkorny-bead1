@@ -54,7 +54,7 @@
             padding: 100, 0, 0, 0
         BoxLayout:
             orientation: 'vertical'
-            size_hint: 0.15, 0.25
+            size_hint: 0.157, 0.25
             Button:
                 text: '\u00dajrakezd\u00e9s'
                 size_hint: 1, 0.33
@@ -77,11 +77,9 @@
         Rectangle:
             pos: self.pos
             size: self.size
-
     BoxLayout:
         orientation: 'vertical'
         padding: 100
-
     Button:
         text: 'Vissza'
         on_press: root.back()
@@ -92,11 +90,9 @@
         Rectangle:
             pos: self.pos
             size: self.size
-
     BoxLayout:
         orientation: 'vertical'
         padding: 100
-
         Label:
             text: 'Szab\u00e1lyok'
             font_size: 70
@@ -105,18 +101,23 @@
             text: 'A j\u00e1t\u00e9k c\u00e9lja a sz\u00e1mjegyek (1-9) be\u00edr\u00e1sa a 9x9 t\u00e1bl\u00e1zat cell\u00e1iba \n\u00fagy, hogy minden sorban \u00e9s oszlopban, valamint a kisebb,\n3x3-as n\u00e9gyzetekben is az \u00f6sszes sz\u00e1m pontosan egyszer szerepeljen.'
             font_size: 28
             color: (0, 0, 0, 1)
+        Label:
+            text: 'A sz\u00e1mokat egy adott mez\u0151 kijel\u00f6l\u00e9se ut\u00e1n a billenty\u0171zeten\n lehet bevinni, illetve a Delete vagy a Backspace gomb megnyom\u00e1s\u00e1val \nt\u00f6r\u00f6lni.'
+            font_size: 28
+            color: (0, 0, 0, 1)
         Button:
             text: 'Vissza'
             font_size: 40
             on_press: root.back()
 <SudokuCell>:
     bold: True
-    color: 0, 0, 0, 1
+    color: 1, 0, 0, 1
     font_size: 20
     font_name: 'Roboto'
+    on_press: self.select()
     canvas.before:
         Color:
-            rgba: 0, 0, 0, 1
+            rgba: 0.2, 0.2, 0.2, 1
         Line:
             width: 1
             rectangle: self.x, self.y, self.width, self.height
