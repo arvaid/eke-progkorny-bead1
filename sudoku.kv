@@ -98,9 +98,17 @@
         on_press: root.back()
         size_hint: 0.2, 0.1
     BoxLayout:
-        id: ScoreList
         orientation: 'vertical'
         padding: 100
+
+        Label:
+            text: 'Rekordok'
+            font_size: 70
+            color: (0.25, 0.25, 1, 1)
+
+        BoxLayout:
+            id: ScoreList
+            orientation: 'vertical'
 <RulesScreen>:
     canvas.before:
         Color:

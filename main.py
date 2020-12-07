@@ -82,7 +82,6 @@ class GameScreen(Screen):
         self.new_game()
 
     def _on_enter(self):
-        self.create_cells()
         self.new_game()
         self._keyboard = Window.request_keyboard(self._keyboard_closed(), self)
         self._keyboard.bind(on_key_down=self._keyboard_press)
@@ -125,29 +124,25 @@ class GameScreen(Screen):
                 row = self.selection[0]
                 if self.selection[1] > 0:
                     for col in range(self.selection[1] - 1, -1, -1):
-                        if not self.cells[row][col].generated:
-                            self.cells[row][col].select()
+                        if self.cells[row][col].select():
                             break
             elif keycode[1] == 'right':
                 row = self.selection[0]
                 if self.selection[1] < 9:
                     for col in range(self.selection[1] + 1, 9):
-                        if not self.cells[row][col].generated:
-                            self.cells[row][col].select()
+                        if self.cells[row][col].select():
                             break
             elif keycode[1] == 'up':
                 col = self.selection[1]
                 if self.selection[0] > 0:
                     for row in range(self.selection[0] - 1, -1, -1):
-                        if not self.cells[row][col].generated:
-                            self.cells[row][col].select()
+                        if self.cells[row][col].select():
                             break
             elif keycode[1] == 'down':
                 col = self.selection[1]
                 if self.selection[0] < 9:
                     for row in range(self.selection[0] + 1, 9):
-                        if not self.cells[row][col].generated:
-                            self.cells[row][col].select()
+                        if self.cells[row][col].select():
                             break
             self.update_grid()
             if self.check_board():
@@ -158,24 +153,19 @@ class GameScreen(Screen):
             self.clockEvent.cancel()
         self.clockEvent = Clock.schedule_interval(self._clock_callback, 1)
 
-    def new_game(self):
-        self.seconds = 0
-        self.timer.text = seconds2str(self.seconds)
+    def init_board(self):
         self.board.clear()
         for i in range(9):
             self.board.append([0, 0, 0, 0, 0, 0, 0, 0, 0])
         self.generate_puzzle()
-        for cell in self.grid.children:
-            value = self.board[cell.row][cell.col]
-            if value != 0:
-                cell.text = str(value)
-                cell.generated = True
-            else:
-                cell.text = ''
-                cell.generated = False
-            cell.set_background()
-        self.game_started = True
+
+    def new_game(self):
+        self.init_board()
+        self.create_cells()
+        self.seconds = 0
+        self.timer.text = seconds2str(self.seconds)
         self.start_timer()
+        self.game_started = True
 
     def generate_puzzle(self):
         base = 3
@@ -332,8 +322,8 @@ class GameScreen(Screen):
             popup.open()
 
     def create_cells(self):
-        self.new_game()
         self.grid.clear_widgets()
+        self.cells.clear()
         for row in range(9):
             self.cells.append([])
             for col in range(9):
@@ -347,6 +337,15 @@ class GameScreen(Screen):
                 cell.set_background()
                 self.grid.add_widget(cell)
                 self.cells[row].append(cell)
+        for cell in self.grid.children:
+            value = self.board[cell.row][cell.col]
+            if value != 0:
+                cell.text = str(value)
+                cell.generated = True
+            else:
+                cell.text = ''
+                cell.generated = False
+            cell.set_background()
 
     def select(self, row, col):
         for cell in self.grid.children:
@@ -386,9 +385,11 @@ class SudokuCell(Button):
                 self.background_color = cell_background_default
 
     def select(self):
-        if not self.generated:
-            self.screen.select(self.row, self.col)
-            self.background_color = cell_background_selected
+        if self.generated:
+            return False
+        self.screen.select(self.row, self.col)
+        self.background_color = cell_background_selected
+        return True
 
 
 class RulesScreen(Screen):
@@ -405,8 +406,7 @@ class ScoreboardScreen(Screen):
         super(ScoreboardScreen, self).__init__(**kwargs)
 
     def create_list(self):
-        layout = BoxLayout(orientation='vertical')
-
+        self.scoreList.clear_widgets()
         conn, cur = open_db()
 
         count = 0
@@ -434,10 +434,9 @@ class ScoreboardScreen(Screen):
             label4.font_size = 20
             row_layout.add_widget(label4)
 
-            layout.add_widget(row_layout)
+            self.scoreList.add_widget(row_layout)
 
         conn.close()
-        self.scoreList.add_widget(layout)
 
     @staticmethod
     def back():
