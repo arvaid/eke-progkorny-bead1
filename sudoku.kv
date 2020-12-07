@@ -19,10 +19,9 @@
             font_size: 70
 
             bold: True
-            color: (0, 1, 0.5, 1)
+            color: (0.25, 0.25, 1, 1)
         Button:
             text: '\u00daj j\u00e1t\u00e9k'
-            font_size: 40
             on_press: root.new_game()
         Button:
             text: 'Rekordok'
@@ -34,8 +33,10 @@
             text: 'Kil\u00e9p\u00e9s'
             on_press: root.exit_game()
 <GameScreen>:
-    on_enter: root.create_cells()
+    on_enter: root._on_enter()
+    on_leave: root._on_leave()
     grid: Grid
+    timer: Timer
     canvas.before:
         Color:
             rgba: 1, 1, 1, 1
@@ -43,6 +44,13 @@
             pos: self.pos
             size: self.size
     BoxLayout:
+        BoxLayout:
+            size_hint: 0.157, 0.25
+            Label:
+                id: Timer
+                text: '00:00'
+                color: 0, 0, 0, 1
+                font_size: 25
         GridLayout:
             id: Grid
             cols: 9
@@ -51,38 +59,48 @@
             height: 599
             col_default_width: 65.5
             col_force_default: True
-            padding: 100, 0, 0, 0
+
         BoxLayout:
             orientation: 'vertical'
             size_hint: 0.157, 0.25
             Button:
+                text: 'CHEAT!'
+                size_hint: 1, 0.25
+                font_size: 20
+                on_press: root.cheat()
+            Button:
                 text: '\u00dajrakezd\u00e9s'
-                size_hint: 1, 0.33
+                size_hint: 1, 0.25
                 font_size: 20
                 on_press: root.reset()
             Button:
                 text: '\u00daj j\u00e1t\u00e9k'
-                size_hint: 1, 0.33
+                size_hint: 1, 0.25
                 font_size: 20
                 on_press: root.new_game()
             Button:
                 text: 'Men\u00fc'
-                size_hint: 1, 0.33
+                size_hint: 1, 0.25
                 font_size: 20
                 on_press: root.back()
 <ScoreboardScreen>:
+    scoreList: ScoreList
+    on_enter: root.create_list()
+
     canvas.before:
         Color:
             rgba: 1, 1, 1, 1
         Rectangle:
             pos: self.pos
             size: self.size
-    BoxLayout:
-        orientation: 'vertical'
-        padding: 100
     Button:
         text: 'Vissza'
         on_press: root.back()
+        size_hint: 0.2, 0.1
+    BoxLayout:
+        id: ScoreList
+        orientation: 'vertical'
+        padding: 100
 <RulesScreen>:
     canvas.before:
         Color:
@@ -121,4 +139,18 @@
         Line:
             width: 1
             rectangle: self.x, self.y, self.width, self.height
+<EnterNamePopup>:
+    size_hint: None, None
+    size: 400, 100
+    player_name: Name
 
+    BoxLayout:
+        TextInput:
+            id: Name
+            hint_text: '<\u00cdrd be a neved>'
+            font_size: 20
+        Button:
+            text: 'Ment\u00e9s'
+            size_hint: 0.2, 1
+            font_size: 20
+            on_press: root.save_score()
